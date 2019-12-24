@@ -96,11 +96,5 @@ install(FILES
   cmake/${PROJECT_NAME}-config.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
   DESTINATION
-    lib/cmake/${PROJECT_VERSION}
-)
-
-export(TARGETS giflib
-  FILE
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
-  NAMESPACE ${PROJECT_NAME}::
+    lib/cmake/${PROJECT_NAME}
 )
