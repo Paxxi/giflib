@@ -60,6 +60,11 @@ target_compile_definitions(giflib
   _CRT_STDC_NO_DEPRECATE
 )
 
+target_compile_options(giflib
+  PRIVATE
+    /sdl-
+)
+
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
