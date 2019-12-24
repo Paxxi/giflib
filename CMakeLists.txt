@@ -1,32 +1,57 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(giflib VERSION 5.1.2 LANGUAGES C)
+project(giflib VERSION 5.2.1 LANGUAGES C)
 
-if(MSVC)
-  set(CMAKE_DEBUG_POSTFIX "d")
-endif()
+set(CMAKE_DEBUG_POSTFIX "d")
 
 add_library(giflib
-  lib/dgif_lib.c
-  lib/egif_lib.c
-  lib/gif_err.c
-  lib/gif_font.c
-  lib/gif_hash.c
-  lib/gif_hash.h
-  lib/gif_lib.h
-  lib/gif_lib_private.h
-  lib/gifalloc.c
-  lib/openbsd-reallocarray.c
-  lib/quantize.c
+  dgif_lib.c
+  egif_lib.c
+  gif_err.c
+  gif_font.c
+  gif_hash.c
+  gif_hash.h
+  gif_lib.h
+  gif_lib_private.h
+  gifalloc.c
+  openbsd-reallocarray.c
+  quantize.c
 )
 
+set_target_properties(giflib
+  PROPERTIES
+    PDB_NAME giflib
+    PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+)
+if (NOT BUILD_SHARED_LIBS)
+  set_target_properties(giflib
+    PROPERTIES
+      OUTPUT_NAME_DEBUG giflibd
+      COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+      COMPILE_PDB_NAME giflib
+      COMPILE_PDB_NAME_DEBUG giflibd
+  )
+  install(FILES
+    ${PROJECT_BINARY_DIR}/RelWithDebInfo/giflib.pdb
+    DESTINATION lib
+    CONFIGURATIONS RelWithDebInfo
+  )
+  install(FILES
+    ${PROJECT_BINARY_DIR}/Debug/giflibd.pdb
+    DESTINATION lib
+    CONFIGURATIONS Debug
+  )
+else()
+  install(FILES
+    $<TARGET_PDB_FILE:giflib>
+    DESTINATION lib
+  )
+endif()
 target_include_directories(giflib
   PRIVATE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   INTERFACE
   $<INSTALL_INTERFACE:include>
-  PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
 )
 
 target_compile_definitions(giflib
@@ -49,7 +74,7 @@ install(TARGETS giflib EXPORT giflib
 )
 
 install(FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/lib/gif_lib.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/gif_lib.h
   DESTINATION include
 )
 
